@@ -15,6 +15,11 @@ public class Building extends AbstractBuilding {
         startElevators();
     }
     public synchronized void startElevators() {
+//        for (AbstractElevator elevator; elevators) {
+//
+//            Thread t = new Thread(theElevator, "Elevator"+elevator.elevatorId);
+//            t.start();
+//        }
         Thread elevator = new Thread(theElevator, "Elevator");
         elevator.start();
     }
