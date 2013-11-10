@@ -8,15 +8,13 @@ public class Building extends AbstractBuilding {
 	 * Other variables/data structures as needed goes here
 	 */
 	private List<Elevator> elevators;
-	private Elevator theElevator;
-	private static int MAX_CAPACITY = 10;
 
 	// private List<AbstractElevator> elevators;
-	public Building(int numFloors, int numElevators) {
-		super(numFloors, numElevators);
+	public Building(int numFloors, int numElevators, int maxCapacity) {
+		super(numFloors, numElevators, maxCapacity);
 		elevators = new ArrayList<Elevator>();
 		for (int i = 0; i < numElevators; i++) {
-			Elevator e = new Elevator(numFloors, i, MAX_CAPACITY);
+			Elevator e = new Elevator(numFloors, i,maxCapacity);
 			elevators.add(e);
 			synchronized (this) {
 				Thread e_t = new Thread(e, "E" + i);
