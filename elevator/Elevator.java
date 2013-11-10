@@ -10,6 +10,8 @@ public class Elevator extends AbstractElevator implements Runnable {
 	private boolean doorsOpen;
 	private int numRiders;
 	private List<Integer> requestedFloors;
+	private boolean ridersCanExit;
+	private boolean ridersCanEnter;
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold,
 			AbstractBuilding building) {
@@ -21,7 +23,31 @@ public class Elevator extends AbstractElevator implements Runnable {
 
 	@Override
 	public void run() {
-		init();
+		while (true) {
+			init();
+			handleUpCalls();
+			handleDownCalls();
+		}
+	}
+
+	private synchronized void handleUpCalls() {
+		for (int i = myFloor; i <= numFloors; i++) {
+			if (upCalls.get(i) > 0 || requestedFloors.get(i) > 0)
+				doFloorTasks(i);
+		}
+	}
+
+	private void handleDownCalls() {
+		for (int i = myFloor; i >= 0; i--) {
+			if (downCalls.get(i) > 0 || requestedFloors.get(i) > 0)
+				doFloorTasks(i);
+		}
+	}
+
+	private void doFloorTasks(int floor) {
+		visitFloor(floor);
+		openDoors(floor);
+		closeDoors();
 	}
 
 	private synchronized void init() {
@@ -35,26 +61,50 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	@Override
-	public void OpenDoors() {
-		// TODO Auto-generated method stub
+	public void openDoors(int floor) {
+		doorsOpen = true;
+		ridersCanEnter = false;
+		ridersCanExit = true;
+		int expectedRidersExit = numRiders - requestedFloors.get(floor);
+		this.notifyAll();
+		while (numRiders != expectedRidersExit) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		ridersCanExit = false;
+		ridersCanEnter = true;
+		this.notifyAll();
+		int expectedRidersEnter = numRiders + upCalls.get(floor)
+				+ downCalls.get(floor);
+		while (numRiders != expectedRidersEnter) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			expectedRidersEnter = numRiders + upCalls.get(floor)
+					+ downCalls.get(floor);
+		}
+	}
+
+	@Override
+	public void closeDoors() {
+		doorsOpen = false;
 
 	}
 
 	@Override
-	public void ClosedDoors() {
-		// TODO Auto-generated method stub
+	public void visitFloor(int floor) {
+		myFloor = floor;
 
 	}
 
 	@Override
-	public void VisitFloor(int floor) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public synchronized boolean Enter(int floor) {
-		while (myFloor != floor || !doorsOpen) {
+	public synchronized boolean enter(int floor, boolean up) {
+		while (myFloor != floor || !doorsOpen || !ridersCanEnter) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
@@ -62,13 +112,17 @@ public class Elevator extends AbstractElevator implements Runnable {
 			}
 		}
 		numRiders++;
+		if (up)
+			upCalls.set(floor, upCalls.get(floor) - 1);
+		else
+			downCalls.set(floor, downCalls.get(floor) - 1);
 		this.notifyAll();
 		return true;
 	}
 
 	@Override
-	public synchronized void Exit(int floor) {
-		while (!doorsOpen || myFloor != floor){
+	public synchronized void exit(int floor) {
+		while (!doorsOpen || myFloor != floor || !ridersCanExit) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
@@ -81,7 +135,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	@Override
-	public synchronized void RequestFloor(int floor) {
+	public synchronized void requestFloor(int floor) {
 		requestedFloors.set(floor, requestedFloors.get(floor) + 1);
 
 	}
