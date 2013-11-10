@@ -22,6 +22,8 @@ public class Building extends AbstractBuilding implements Runnable{
 
 	private synchronized AbstractElevator signalElevator() {
 		AbstractElevator e = determineElevator();
+		//TODO
+		return e;
 		
 		
 		
@@ -52,7 +54,13 @@ public class Building extends AbstractBuilding implements Runnable{
 	public synchronized AbstractElevator CallUp(int fromFloor) {
 		upCalls.add(fromFloor);
 		this.notify();
-		this.wait();
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null; //TODO
 		
 	}
 
