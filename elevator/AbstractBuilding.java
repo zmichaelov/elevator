@@ -1,10 +1,10 @@
-import java.util.List;
+
+package elevator;
 
 public abstract class AbstractBuilding {
 
 	protected int numFloors;
 	protected int numElevators;
-	protected List<Elevator> myElevators;
 	
 	/**
 	 * Other variables/data structures as needed goes here 
@@ -15,16 +15,13 @@ public abstract class AbstractBuilding {
 		this.numFloors = numFloors;
 		this.numElevators = numElevators;
 	}
-	
-
 
 	/**
-	 * Elevator rider interface (part 2): invoked by rider threads.
-	 * @param numElevators 
+	/**
+	 * elevator.Elevator rider interface (part 2): invoked by rider threads.
  	 */
 
-
-	/**
+    /**
      * Signal an elevator that we want to go up
      *
      * @param fromFloor  floor from which elevator is called

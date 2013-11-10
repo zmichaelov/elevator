@@ -1,26 +1,23 @@
+package elevator;
 
 public abstract class AbstractElevator {
 
 	protected int numFloors; 
 	protected int elevatorId;
 	protected int maxOccupancyThreshold;
-	protected int myFloor;
-	protected AbstractBuilding myBuilding;
 
 	/**
 	 * Other variables/data structures as needed goes here 
 	 */
 
-	public AbstractElevator(int numFloors, int elevatorId, int maxOccupancyThreshold, AbstractBuilding building) {
+	public AbstractElevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		this.numFloors = numFloors;
 		this.elevatorId = elevatorId;
 		this.maxOccupancyThreshold = maxOccupancyThreshold;
-		this.myFloor = 1;
-		this.myBuilding = building;
 	}
-
+	
 	/**
-	 * Elevator control inferface: invoked by Elevator thread.
+	 * elevator.Elevator control inferface: invoked by elevator.Elevator thread.
  	 */
 
 	/* Signal incoming and outgoing riders */
@@ -37,7 +34,7 @@ public abstract class AbstractElevator {
 
 
 	/**
-	 * Elevator rider interface (part 1): invoked by rider threads. 
+	 * elevator.Elevator rider interface (part 1): invoked by rider threads.
   	 */
 
 	/* Enter the elevator */
@@ -48,14 +45,7 @@ public abstract class AbstractElevator {
 
 	/* Request a destination floor once you enter */
  	public abstract void RequestFloor(int floor);
-
- 	/* Return Current Floor */
-	public abstract int getFloor();
-
-	public abstract void setDirection(int dir);
-
-	public abstract void callUp(int fromFloor);
 	
 	/* Other methods as needed goes here */
+	
 }
-

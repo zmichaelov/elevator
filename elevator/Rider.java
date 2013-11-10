@@ -1,3 +1,5 @@
+package elevator;
+
 public class Rider implements Runnable {
 
 	private AbstractBuilding myBuilding;
