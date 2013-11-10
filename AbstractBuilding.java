@@ -3,15 +3,17 @@ public abstract class AbstractBuilding {
 
 	protected int numFloors;
 	protected int numElevators;
+	protected int maxCapacity;
 	
 	/**
 	 * Other variables/data structures as needed goes here 
 	 */
 
 
-	public AbstractBuilding(int numFloors, int numElevators) {
+	public AbstractBuilding(int numFloors, int numElevators, int maxCapacity) {
 		this.numFloors = numFloors;
 		this.numElevators = numElevators;
+		this.maxCapacity = maxCapacity;
 	}
 
 	/**
