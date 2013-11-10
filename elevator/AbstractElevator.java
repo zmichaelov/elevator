@@ -6,18 +6,17 @@ public abstract class AbstractElevator {
 	protected int elevatorId;
 	protected int maxOccupancyThreshold;
 	protected int myFloor;
-	protected AbstractBuilding myBuilding;
+	protected String myName;
 
 	/**
 	 * Other variables/data structures as needed goes here 
 	 */
 
-	public AbstractElevator(int numFloors, int elevatorId, int maxOccupancyThreshold, AbstractBuilding building) {
+	public AbstractElevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
 		this.numFloors = numFloors;
 		this.elevatorId = elevatorId;
 		this.maxOccupancyThreshold = maxOccupancyThreshold;
 		this.myFloor = 1;
-		this.myBuilding = building;
 	}
 
 	/**
@@ -56,6 +55,10 @@ public abstract class AbstractElevator {
 	public abstract void callUp(int fromFloor);
 
 	public abstract void callDown(int fromFloor);
+
+	public String getName() {
+		return myName;
+	}
 	
 	/* Other methods as needed goes here */
 }

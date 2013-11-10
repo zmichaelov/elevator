@@ -13,7 +13,7 @@ public class Building extends AbstractBuilding implements Runnable {
 
 	public Building(int numFloors, int numElevators) {
 		super(numFloors, numElevators);
-		initElevators(numElevators);
+		//initElevators(numElevators);
 	}
 
 	@Override
@@ -45,15 +45,15 @@ public class Building extends AbstractBuilding implements Runnable {
 		}
 	}
 
-	private void initElevators(int numElevators) {
+/*	private void initElevators(int numElevators) {
 		myElevators = new ArrayList<Elevator>();
 		for (int i = 1; i <= numElevators; i++) {
-			Elevator e = new Elevator(numFloors, i, MAX_OCCUPANTS, this);
+			Elevator e = new Elevator(numFloors, i, MAX_OCCUPANTS);
 			Thread t = new Thread(e);
 			myElevators.add(e);
 			t.start();
 		}
-	}
+	} */
 
 	@Override
 	public synchronized AbstractElevator CallUp(int fromFloor) {

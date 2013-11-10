@@ -13,12 +13,12 @@ public class Elevator extends AbstractElevator implements Runnable {
 	private boolean ridersCanExit;
 	private boolean ridersCanEnter;
 
-	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold,
-			AbstractBuilding building) {
-		super(numFloors, elevatorId, maxOccupancyThreshold, building);
+	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold, String name) {
+		super(numFloors, elevatorId, maxOccupancyThreshold);
 		upCalls = new ArrayList<Integer>(numFloors);
 		downCalls = new ArrayList<Integer>(numFloors);
 		requestedFloors = new ArrayList<Integer>(numFloors);
+		this.myName = name;
 	}
 
 	@Override
@@ -63,7 +63,9 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void openDoors(int floor) {
 		doorsOpen = true;
+		System.out.println(""+myName+": doors open");
 		ridersCanEnter = false;
+		System.out.println(""+myName+": riders can enter");
 		ridersCanExit = true;
 		int expectedRidersExit = numRiders - requestedFloors.get(floor);
 		this.notifyAll();
@@ -76,6 +78,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 		}
 		ridersCanExit = false;
 		ridersCanEnter = true;
+		System.out.println(""+myName+": riders can exit");
 		this.notifyAll();
 		int expectedRidersEnter = numRiders + upCalls.get(floor)
 				+ downCalls.get(floor);
@@ -93,12 +96,14 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void closeDoors() {
 		doorsOpen = false;
+		System.out.println(""+myName+": doors closed");
 
 	}
 
 	@Override
 	public void visitFloor(int floor) {
 		myFloor = floor;
+		System.out.println(""+myName+": visit floor "+floor);
 
 	}
 
