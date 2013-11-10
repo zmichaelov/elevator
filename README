@@ -8,7 +8,7 @@
 
 	Name1: Glenn Rivkees
 	NetId1: ghr4
-	Time spent: 6 hours
+	Time spent: 10 hours
 
 	Name2: Full Name 	// Edit this accordingly
 	NetId2: fn	 	// Edit
@@ -51,6 +51,14 @@
  * In case of lab is limited in some functionality, you should provide the
  * details to maximize your partial credit.  
  * */
+
+=== 1: Event Barrier ===
+
+Event Barrier was implemented using Java monitors. All of the synchronized functions use the Java "synchronized" keyword to ensure locking is enforced on the function calls and competing functions do not occur at the same time. Additionally, the "wait, notify" paradigm is used so that the threads wait when the arrive until an event is raised and a "notify all" is given. Then, the raise function waits until all threads have completed. The last thread to complete notifies the Controller, which then ends the raised event. In addition to the locking primitives, a boolean is used to track whether an event is currently raised, and the number of threads waiting or currently executing. These variables are secured by the general synchronized lock that is on the functions.
+
+Finally, to test this system, decorators were used to wrap the EventBarrier and implement Runnable with functions needed so the thread acted as a Controller or a "Minstrel". This allowed for easy testing of the EventBarrier.
+
+=== 2. Elevator === 
 
 /************************
  * Feedback on the lab
