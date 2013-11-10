@@ -1,5 +1,3 @@
-package elevator;
-
 
 public class Building extends AbstractBuilding {
     /**

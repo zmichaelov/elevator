@@ -1,5 +1,3 @@
-package elevator;
-
 public abstract class AbstractElevator {
 
 	protected int numFloors; 

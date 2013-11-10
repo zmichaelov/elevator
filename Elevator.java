@@ -1,8 +1,3 @@
-package elevator;
-
-import barrier.AbstractEventBarrier;
-import barrier.EventBarrier;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -29,7 +24,7 @@ public class Elevator extends AbstractElevator implements Runnable{
 
     @Override
     public synchronized void OpenDoors() {
-        System.out.println("Doors Opening on Floor " + currentFloor);
+        ElevatorLogger.log("E? on F"+currentFloor+" opens");
         doorBarriers.get(currentFloor).raise();// signal waiting riders to Enter() and Exit()
         // this will block until all riders have gotten on
         this.ClosedDoors(); // close doors when they are done
@@ -38,12 +33,16 @@ public class Elevator extends AbstractElevator implements Runnable{
     @Override
     public synchronized void ClosedDoors() {
             // block until rider enters
-        System.out.println("Doors Closing on Floor " + currentFloor);
+        ElevatorLogger.log("E? on F"+currentFloor+" closes");
     }
 
     @Override
     public synchronized void VisitFloor(int floor) {
-        System.out.println("Visiting Floor " + floor);
+        if (currentFloor < floor) {
+            ElevatorLogger.log("E? moves up to F"+floor);
+        } else if (currentFloor > floor) {
+            ElevatorLogger.log("E? moves down to F"+floor);
+        }
         currentFloor = floor;
         this.OpenDoors();
     }
@@ -51,21 +50,20 @@ public class Elevator extends AbstractElevator implements Runnable{
     // entering riders
     @Override
     public boolean Enter() {
-        System.out.println(Thread.currentThread().getName() + " entering on Floor " + currentFloor);
+        ElevatorLogger.log("R"+Thread.currentThread().getName()+" enters E? on F"+currentFloor);
         doorBarriers.get(currentFloor).complete(); // signal that a rider has gotten on
         return true;
     }
 
     @Override
     public void Exit() {
-        System.out.println(Thread.currentThread().getName() + " exiting on Floor " + currentFloor);
+        ElevatorLogger.log("R"+Thread.currentThread().getName()+" exits E? on F"+currentFloor);
         doorBarriers.get(currentFloor).complete();
     }
 
     @Override
     public void RequestFloor(int floor) {
         synchronized (doorBarriers.get(floor)) {// need to use the event barrier lock or we will deadlock
-            System.out.println(Thread.currentThread().getName() + " requesting Floor " + floor);
             requestedFloors.add(floor);
             doorBarriers.get(floor).arrive();
         }

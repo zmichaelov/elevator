@@ -1,4 +1,3 @@
-package elevator;
 
 public abstract class AbstractBuilding {
 

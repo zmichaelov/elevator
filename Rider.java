@@ -1,4 +1,3 @@
-package elevator;
 
 public class Rider implements Runnable {
     private AbstractBuilding building;
@@ -17,15 +16,22 @@ public class Rider implements Runnable {
         while (!elevator.Enter()){// loop until we successfully call an elevator
             elevator = callElevator();
         }
-        elevator.RequestFloor(destinationFloor);
+        pushElevatorButton(elevator, destinationFloor);
         elevator.Exit();
     }
 
     public synchronized AbstractElevator callElevator(){
         if(currentFloor < destinationFloor) {
+            ElevatorLogger.log("R? pushes U"+currentFloor);
             return building.CallUp(currentFloor);
         } else {
+            ElevatorLogger.log("R? pushes D"+currentFloor);
             return building.CallDown(currentFloor);
         }
+    }
+
+    public pushElevatorButton(AbstractElevator elevator, int destinationFloor) {
+        ElevatorLogger.log("R? pushes E?B"+destinationFloor);
+        elevator.RequestFloor(destinationFloor);
     }
 }
