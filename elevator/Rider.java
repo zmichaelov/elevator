@@ -1,27 +1,31 @@
 package elevator;
 
 public class Rider implements Runnable {
+    private AbstractBuilding building;
+    private volatile int currentFloor, destinationFloor;
 
-	private AbstractBuilding myBuilding;
-	private AbstractElevator myElevator;
-	private String myName;
-	private int myFloor;
-	private int myDestination;
+    public Rider(AbstractBuilding building, int currentFloor, int destinationFloor) {
+        this.building = building;
+        this.currentFloor = currentFloor;
+        this.destinationFloor = destinationFloor;
+    }
 
-	public Rider(Building b, String name, int floor, int dest) {
-		myBuilding = b;
-		myName = name;
-		myFloor = floor;
-		myDestination = dest;
-	}
+    @Override
+    public void run() {
 
-	@Override
-	public void run() {
-		if (myDestination > myFloor)
-			myElevator = myBuilding.CallUp(myFloor);
-		else if (myDestination < myFloor)
-			myElevator = myBuilding.CallDown(myFloor);
-		else
-			; // TODO exit thread
-	}
+        AbstractElevator elevator = callElevator();
+        while (!elevator.Enter()){// loop until we successfully call an elevator
+            elevator = callElevator();
+        }
+        elevator.RequestFloor(destinationFloor);
+        elevator.Exit();
+    }
+
+    public synchronized AbstractElevator callElevator(){
+        if(currentFloor < destinationFloor) {
+            return building.CallUp(currentFloor);
+        } else {
+            return building.CallDown(currentFloor);
+        }
+    }
 }
