@@ -1,3 +1,4 @@
+package barrier;
 import java.util.*;
 
 public class EventBarrier extends AbstractEventBarrier {

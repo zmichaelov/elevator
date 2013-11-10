@@ -1,3 +1,4 @@
+package elevator;
 
 public class Elevator extends AbstractElevator implements Runnable {
 	
