@@ -1,14 +1,22 @@
 package elevator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Elevator extends AbstractElevator implements Runnable {
-	
+
 	private List<Integer> upCalls;
 	private List<Integer> downCalls;
+	private boolean doorsOpen;
+	private int numRiders;
+	private List<Integer> requestedFloors;
 
-	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold, AbstractBuilding building) {
+	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold,
+			AbstractBuilding building) {
 		super(numFloors, elevatorId, maxOccupancyThreshold, building);
+		upCalls = new ArrayList<Integer>(numFloors);
+		downCalls = new ArrayList<Integer>(numFloors);
+		requestedFloors = new ArrayList<Integer>(numFloors);
 	}
 
 	@Override
@@ -17,7 +25,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	private synchronized void init() {
-		while(upCalls.isEmpty() && downCalls.isEmpty()){
+		while (upCalls.isEmpty() && downCalls.isEmpty()) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
@@ -29,53 +37,68 @@ public class Elevator extends AbstractElevator implements Runnable {
 	@Override
 	public void OpenDoors() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void ClosedDoors() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void VisitFloor(int floor) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public boolean Enter() {
-		// TODO Auto-generated method stub
-		return false;
+	public synchronized boolean Enter(int floor) {
+		while (myFloor != floor || !doorsOpen) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		numRiders++;
+		this.notifyAll();
+		return true;
 	}
 
 	@Override
-	public void Exit() {
-		// TODO Auto-generated method stub
-		
+	public synchronized void Exit(int floor) {
+		while (!doorsOpen || myFloor != floor){
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		numRiders--;
+		this.notifyAll();
+
 	}
 
 	@Override
-	public void RequestFloor(int floor) {
-		// TODO Auto-generated method stub
-		
+	public synchronized void RequestFloor(int floor) {
+		requestedFloors.set(floor, requestedFloors.get(floor) + 1);
+
 	}
-	
+
 	@Override
-	public int getFloor(){
+	public int getFloor() {
 		return myFloor;
 	}
 
 	@Override
-	public void callUp(int fromFloor) {
-		//TODO
+	public synchronized void callUp(int fromFloor) {
+		upCalls.set(fromFloor, upCalls.get(fromFloor) + 1);
 	}
 
 	@Override
-	public void callDown(int fromFloor) {
-		// TODO Auto-generated method stub
-		
+	public synchronized void callDown(int fromFloor) {
+		downCalls.set(fromFloor, downCalls.get(fromFloor) + 1);
 	}
 
 }

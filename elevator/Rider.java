@@ -20,7 +20,11 @@ public class Rider implements Runnable {
 			myElevator = myBuilding.CallUp(myFloor);
 		else if (myDestination < myFloor)
 			myElevator = myBuilding.CallDown(myFloor);
-		else
-			; // TODO exit thread
+		else ; // TODO location = destination. exit thread
+		if(!myElevator.Enter(myFloor)){
+			//TODO could not board elevator
+		}
+		myElevator.RequestFloor(myDestination);
+		myElevator.Exit(myDestination);
 	}
 }

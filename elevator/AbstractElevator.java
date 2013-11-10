@@ -42,10 +42,10 @@ public abstract class AbstractElevator {
   	 */
 
 	/* Enter the elevator */
-	public abstract boolean Enter();
+	public abstract boolean Enter(int floor);
 	
 	/* Exit the elevator */
-	public abstract void Exit();
+	public abstract void Exit(int floor);
 
 	/* Request a destination floor once you enter */
  	public abstract void RequestFloor(int floor);

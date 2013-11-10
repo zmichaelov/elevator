@@ -1,8 +1,9 @@
 package elevator;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Building extends AbstractBuilding implements Runnable{
+public class Building extends AbstractBuilding implements Runnable {
 
 	private static final int MAX_OCCUPANTS = 0;
 	private List<Integer> upCalls;
@@ -23,21 +24,24 @@ public class Building extends AbstractBuilding implements Runnable{
 
 	private synchronized void processCalls() {
 		myCurrentElevator = determineElevator();
-		for(Integer i:upCalls){
+		for (Integer i : upCalls) {
 			myCurrentElevator.callUp(i);
 		}
-		for(Integer j: downCalls){
+		for (Integer j : downCalls) {
 			myCurrentElevator.callDown(j);
 		}
+		upCalls = new ArrayList<Integer>();
+		downCalls = new ArrayList<Integer>();
 	}
+
 	private synchronized void waitForCall() {
-		while(upCalls.isEmpty() && downCalls.isEmpty()){
+		while (upCalls.isEmpty() && downCalls.isEmpty()) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 
@@ -55,13 +59,15 @@ public class Building extends AbstractBuilding implements Runnable{
 	public synchronized AbstractElevator CallUp(int fromFloor) {
 		upCalls.add(fromFloor);
 		this.notify();
-		try {
-			this.wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		while (myCurrentElevator == null) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		return null; //TODO
-		
+		return myCurrentElevator; // TODO
+
 	}
 
 	private AbstractElevator determineElevator() {
