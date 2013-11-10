@@ -1,9 +1,11 @@
 package elevator;
 
+import java.util.List;
+
 public class Elevator extends AbstractElevator implements Runnable {
 	
-	private int myDirection;
-	private int myCaller;
+	private List<Integer> upCalls;
+	private List<Integer> downCalls;
 
 	public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold, AbstractBuilding building) {
 		super(numFloors, elevatorId, maxOccupancyThreshold, building);
@@ -15,7 +17,7 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	private synchronized void init() {
-		while(myCaller != 0){
+		while(upCalls.isEmpty() && downCalls.isEmpty()){
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
@@ -66,13 +68,14 @@ public class Elevator extends AbstractElevator implements Runnable {
 	}
 
 	@Override
-	public synchronized void setDirection(int dir) {
-		myDirection = dir;
+	public void callUp(int fromFloor) {
+		//TODO
 	}
 
 	@Override
-	public void callUp(int fromFloor) {
-		myCaller = fromFloor;
+	public void callDown(int fromFloor) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

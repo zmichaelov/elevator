@@ -7,6 +7,7 @@ public class Building extends AbstractBuilding implements Runnable{
 	private static final int MAX_OCCUPANTS = 0;
 	private List<Integer> upCalls;
 	private List<Integer> downCalls;
+	private List<Elevator> myElevators;
 	private AbstractElevator myCurrentElevator;
 
 	public Building(int numFloors, int numElevators) {
@@ -16,28 +17,27 @@ public class Building extends AbstractBuilding implements Runnable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		init();
-		myCurrentElevator = signalElevator();
+		waitForCall();
+		processCalls();
 	}
 
-	private synchronized AbstractElevator signalElevator() {
-		AbstractElevator e = determineElevator();
-		//TODO
-		return e;
-		
-		
-		
+	private synchronized void processCalls() {
+		myCurrentElevator = determineElevator();
+		for(Integer i:upCalls){
+			myCurrentElevator.callUp(i);
+		}
+		for(Integer j: downCalls){
+			myCurrentElevator.callDown(j);
+		}
 	}
-
-	private synchronized void init() {
+	private synchronized void waitForCall() {
 		while(upCalls.isEmpty() && downCalls.isEmpty()){
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
 	}
 
@@ -58,7 +58,6 @@ public class Building extends AbstractBuilding implements Runnable{
 		try {
 			this.wait();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null; //TODO

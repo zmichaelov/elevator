@@ -53,9 +53,9 @@ public abstract class AbstractElevator {
  	/* Return Current Floor */
 	public abstract int getFloor();
 
-	public abstract void setDirection(int dir);
-
 	public abstract void callUp(int fromFloor);
+
+	public abstract void callDown(int fromFloor);
 	
 	/* Other methods as needed goes here */
 }

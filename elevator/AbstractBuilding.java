@@ -5,7 +5,6 @@ public abstract class AbstractBuilding {
 
 	protected int numFloors;
 	protected int numElevators;
-	protected List<Elevator> myElevators;
 	
 	/**
 	 * Other variables/data structures as needed goes here 
