@@ -1,10 +1,12 @@
+package elevator;
+
 
 public class Building extends AbstractBuilding {
     /**
      * Other variables/data structures as needed goes here
      */
     private Elevator theElevator;
-    private static int MAX_CAPACITY = 10;
+    private static int MAX_CAPACITY = 1;
 //    private List<AbstractElevator> elevators;
     public Building(int numFloors, int numElevators) {
         super(numFloors, numElevators);
@@ -16,6 +18,11 @@ public class Building extends AbstractBuilding {
         startElevators();
     }
     public synchronized void startElevators() {
+//        for (AbstractElevator elevator; elevators) {
+//
+//            Thread t = new Thread(theElevator, "Elevator"+elevator.elevatorId);
+//            t.start();
+//        }
         Thread elevator = new Thread(theElevator, "Elevator");
         elevator.start();
     }
