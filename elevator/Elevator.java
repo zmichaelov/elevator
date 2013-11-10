@@ -15,22 +15,25 @@ public class Elevator extends AbstractElevator implements Runnable{
      * Other variables/data structures as needed goes here
      */
     private volatile int currentFloor;
-    private Queue<Integer> requestedFloors;
+    private List<Integer> requestedFloors;
     private List<AbstractEventBarrier> doorBarriers;
+	private boolean doorsOpen;
     // need to count which riders get off at which point
     public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
         super(numFloors, elevatorId, maxOccupancyThreshold);
-        requestedFloors = new ConcurrentLinkedQueue<Integer>();
+        requestedFloors = new ArrayList<Integer>();
         doorBarriers = new ArrayList<AbstractEventBarrier>();
         for (int i = 0; i < numFloors; i++) {
             doorBarriers.add(new EventBarrier());
         }
         currentFloor = 0; // start at bottom
+        doorsOpen = false;
     }
 
     @Override
     public synchronized void OpenDoors() {
-        System.out.println("Doors Opening on Floor " + currentFloor);
+        System.out.println(Thread.currentThread().getName() +": Doors Opening on Floor " + currentFloor);
+        doorsOpen = true;
         doorBarriers.get(currentFloor).raise();// signal waiting riders to Enter() and Exit()
         // this will block until all riders have gotten on
         this.ClosedDoors(); // close doors when they are done
@@ -39,12 +42,13 @@ public class Elevator extends AbstractElevator implements Runnable{
     @Override
     public synchronized void ClosedDoors() {
             // block until rider enters
-        System.out.println("Doors Closing on Floor " + currentFloor);
+    	doorsOpen = false;
+        System.out.println(Thread.currentThread().getName() +": Doors Closing on Floor " + currentFloor);
     }
 
     @Override
     public synchronized void VisitFloor(int floor) {
-        System.out.println("Visiting Floor " + floor);
+        System.out.println(Thread.currentThread().getName() +": Visiting Floor " + floor);
         currentFloor = floor;
         this.OpenDoors();
     }
@@ -77,11 +81,27 @@ public class Elevator extends AbstractElevator implements Runnable{
         while(true) {
 
             while(!requestedFloors.isEmpty()) {
-                Integer nextFloor = requestedFloors.poll();
+                Integer nextFloor = requestedFloors.remove(0);
                 assert(nextFloor != null);
                 VisitFloor(nextFloor);
             }
 
         }
     }
+    
+    public synchronized int getFloor(){
+    	return currentFloor;
+    }
+    
+    public synchronized int getLastRequest() {
+    	return requestedFloors.get(requestedFloors.size()-1);
+    }
+
+	public synchronized List<Integer> getRequests() {
+		return requestedFloors;
+	}
+
+	public synchronized boolean isOpen() {
+		return doorsOpen;
+	}
 }

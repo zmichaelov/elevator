@@ -1,40 +1,70 @@
-
 package elevator;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Building extends AbstractBuilding {
-    /**
-     * Other variables/data structures as needed goes here
-     */
-    private Elevator theElevator;
-    private static int MAX_CAPACITY = 10;
-//    private List<AbstractElevator> elevators;
-    public Building(int numFloors, int numElevators) {
-        super(numFloors, numElevators);
-//        for (int i = 0; i < numElevators; i++) {
-//           elevators.add(new Elevator(numFloors, i, MAX_CAPACITY));
-//        }
-        theElevator = new Elevator(numFloors, 0, MAX_CAPACITY);
-        // start the elevators
-        startElevators();
-    }
-    public synchronized void startElevators() {
-        Thread elevator = new Thread(theElevator, "Elevator");
-        elevator.start();
-    }
-    // by default will return the current elevator
-    // need ot extend to handle multiple elevators.
-    @Override
-    public synchronized AbstractElevator CallUp(int fromFloor) {
-        // add a request for an elevator
-        // and wait for it to arrive
-        theElevator.RequestFloor(fromFloor);
-        return theElevator;
-    }
+	/**
+	 * Other variables/data structures as needed goes here
+	 */
+	private List<Elevator> elevators;
+	private Elevator theElevator;
+	private static int MAX_CAPACITY = 10;
 
-    @Override
-    public synchronized AbstractElevator CallDown(int fromFloor) {
-        theElevator.RequestFloor(fromFloor);
-        return theElevator;
-    }
+	// private List<AbstractElevator> elevators;
+	public Building(int numFloors, int numElevators) {
+		super(numFloors, numElevators);
+		elevators = new ArrayList<Elevator>();
+		for (int i = 0; i < numElevators; i++) {
+			Elevator e = new Elevator(numFloors, i, MAX_CAPACITY);
+			elevators.add(e);
+			synchronized (this) {
+				Thread e_t = new Thread(e, "E" + i);
+				e_t.start();
+			}
+		}
+	}
+
+	// by default will return the current elevator
+	// need to extend to handle multiple elevators.
+	@Override
+	public synchronized AbstractElevator CallUp(int fromFloor) {
+		// add a request for an elevator
+		// and wait for it to arrive
+		Elevator e = determineElevator(fromFloor);
+		e.RequestFloor(fromFloor);
+		return e;
+	}
+
+	@Override
+	public synchronized AbstractElevator CallDown(int fromFloor) {
+		Elevator e = determineElevator(fromFloor);
+		e.RequestFloor(fromFloor);
+		return e;
+	}
+
+	private synchronized Elevator determineElevator(int fromFloor) {
+		Elevator result = null;
+		for (Elevator elevator : elevators) {
+			if(result != null){
+				if (elevator.getRequests().contains(fromFloor) ||
+						elevator.getFloor() == fromFloor && elevator.isOpen())
+					return elevator;
+				if (result.getRequests().size() >= elevator.getRequests().size()) {
+					if(result.getRequests().size() == elevator.getRequests().size()){
+						if(result.getRequests().size() != 0){
+							if(Math.abs(result.getLastRequest() - fromFloor) >= Math.abs(elevator.getLastRequest() - fromFloor) && !elevator.isOpen()){
+								result = elevator;
+							}
+						} else{
+							if(Math.abs(result.getFloor() - fromFloor) >= Math.abs(elevator.getFloor() - fromFloor) && !elevator.isOpen()){
+								result = elevator;
+							}
+						}
+					} else result = elevator;
+				}
+			} else result = elevator;
+		}
+		return result;
+	}
 }
