@@ -18,8 +18,10 @@ public class Elevator extends AbstractElevator implements Runnable{
     private AtomicInteger numRiders;
     private List<AbstractEventBarrier> doorBarriers;
 	private boolean doorsOpen;
+	private String myName;
+	
     // need to count which riders get off at which point
-    public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold) {
+    public Elevator(int numFloors, int elevatorId, int maxOccupancyThreshold, String name) {
         super(numFloors, elevatorId, maxOccupancyThreshold);
         requestedFloors = new ArrayList<Integer>();
         doorBarriers = new ArrayList<AbstractEventBarrier>();
@@ -29,6 +31,7 @@ public class Elevator extends AbstractElevator implements Runnable{
         currentFloor = 0; // start at bottom
         doorsOpen = false;
         numRiders = new AtomicInteger(0);
+        myName = name;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class Elevator extends AbstractElevator implements Runnable{
             // block until rider enters
     	doorsOpen = false;
         ElevatorLogger.log(Thread.currentThread().getName()+" on F"+currentFloor+" closes");
-        System.out.println("Number of riders after closing on floor " + currentFloor + ": " + numRiders.get());
+        //System.out.println("Number of riders after closing on floor " + currentFloor + ": " + numRiders.get());
     }
 
     @Override
@@ -68,7 +71,7 @@ public class Elevator extends AbstractElevator implements Runnable{
             // this generation of the event barrier will hang indefinitely
             return false;
         }
-        ElevatorLogger.log("R"+Thread.currentThread().getName()+" enters E? on F"+currentFloor);
+        ElevatorLogger.log("R"+Thread.currentThread().getName()+" enters "+myName+" on F"+currentFloor);
         numRiders.incrementAndGet();// increment the number of riders
         doorBarriers.get(currentFloor).complete(); // signal that a rider has gotten on
         return true;
@@ -76,7 +79,7 @@ public class Elevator extends AbstractElevator implements Runnable{
 
     @Override
     public void Exit() {
-        ElevatorLogger.log("R"+Thread.currentThread().getName()+" exits E? on F"+currentFloor);
+        ElevatorLogger.log("R"+Thread.currentThread().getName()+" exits "+myName+" on F"+currentFloor);
         numRiders.decrementAndGet();        
         doorBarriers.get(currentFloor).complete();
     }
@@ -116,5 +119,10 @@ public class Elevator extends AbstractElevator implements Runnable{
 
 	public synchronized boolean isOpen() {
 		return doorsOpen;
+	}
+
+	@Override
+	public String getName() {
+		return myName;
 	}
 }

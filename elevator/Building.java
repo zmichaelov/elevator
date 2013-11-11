@@ -14,7 +14,7 @@ public class Building extends AbstractBuilding {
 		super(numFloors, numElevators, maxCapacity);
 		elevators = new ArrayList<Elevator>();
 		for (int i = 0; i < numElevators; i++) {
-			Elevator e = new Elevator(numFloors, i,maxCapacity);
+			Elevator e = new Elevator(numFloors, i,maxCapacity,"E"+i);
 			elevators.add(e);
 			synchronized (this) {
 				Thread e_t = new Thread(e, "E" + i);
@@ -30,13 +30,15 @@ public class Building extends AbstractBuilding {
 		// add a request for an elevator
 		// and wait for it to arrive
 		Elevator e = determineElevator(fromFloor);
+		ElevatorLogger.log("R"+Thread.currentThread().getName()+" pushes U"+fromFloor);
 		e.RequestFloor(fromFloor);
 		return e;
 	}
 
 	@Override
-	public synchronized AbstractElevator CallDown(int fromFloor) {
+	public synchronized AbstractElevator CallDown(int fromFloor) {		
 		Elevator e = determineElevator(fromFloor);
+		ElevatorLogger.log("R"+Thread.currentThread().getName()+" pushes D"+fromFloor);
 		e.RequestFloor(fromFloor);
 		return e;
 	}

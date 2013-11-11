@@ -45,6 +45,8 @@ public abstract class AbstractElevator {
 
 	/* Request a destination floor once you enter */
  	public abstract void RequestFloor(int floor);
+
+	public abstract String getName();
 	
 	/* Other methods as needed goes here */
 	

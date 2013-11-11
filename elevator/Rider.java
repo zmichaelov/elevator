@@ -46,16 +46,14 @@ public class Rider implements Runnable {
 
     public synchronized AbstractElevator callElevator(){
         if(currentFloor < destinationFloor) {
-            ElevatorLogger.log("R"+Thread.currentThread().getName()+" pushes U"+currentFloor);
             return building.CallUp(currentFloor);
         } else {
-            ElevatorLogger.log("R"+Thread.currentThread().getName()+" pushes D"+currentFloor);
             return building.CallDown(currentFloor);
         }
     }
 
     public void pushElevatorButton(AbstractElevator elevator, int destinationFloor) {
-        ElevatorLogger.log("R"+Thread.currentThread().getName()+" pushes E?B"+destinationFloor);
+        ElevatorLogger.log("R"+Thread.currentThread().getName()+" pushes "+elevator.getName()+"B"+destinationFloor);
         elevator.RequestFloor(destinationFloor);
     }
 }
