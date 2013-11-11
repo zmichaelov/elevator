@@ -80,7 +80,8 @@ This allows waiting riders to Enter() and Exit() the elevator. on each call to E
 the EventBarrier. In this sense, each rider knows whether they are getting off or on, and the EventBarrier is only
 concerned how many people need move before it can close the doors. OpenDoors() will block until the expected number
 of completes are called. We use an integer and 2 lists to keep track of the current floor, the EventBarriers, and
-the requested floors.
+the requested floors. In the interest of reduced complexity and avoiding rider starvation, we process requests on a
+first come, first serve basis.
 
 Part 2.
 To add the functionality for elevator capacity, we introduce an AtomicInteger to keep track of the number of Riders in
@@ -93,10 +94,6 @@ elevator.
  * Feedback on the lab
  ************************/
 Concurrency is hard!
-/*
- * Any comments/questions/suggestions/experiences that you would help us to
- * improve the lab.
- * */
 
 /************************
  * References
@@ -107,6 +104,3 @@ http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/atomic/AtomicInteg
 Lab 3 FAQ
 Recitation Slides (posted on Piazza)
 Consulted with another group (loc2) on the proper behavior of ClosedDoors()
-/*
- * List of collaborators involved including any online references/citations.
- * */
