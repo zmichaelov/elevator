@@ -88,7 +88,9 @@ To add the functionality for elevator capacity, we introduce an AtomicInteger to
 the elevator at any given time. When Rider attempts to enter the elevator, we check to see if this value is less than
 the max capacity for the elevator. If it is not, we increment the integer and proceed as before, and return true. If we
 have reached the max capacity, then we return false. If a Rider sees Enter() return false, they simply request another
-elevator.
+elevator. To test this, we set the capacity to be really small (e.g. 2), and then checked on each ClosedDoors() call
+ how many riders were in the elevator. All riders were eventually serviced as in Part 1, it just took longer because
+ sometimes a rider would have to request an elevator multiple times before it was finally able enter it.
 
 /************************
  * Feedback on the lab
