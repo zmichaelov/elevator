@@ -83,6 +83,11 @@ of completes are called. We use an integer and 2 lists to keep track of the curr
 the requested floors.
 
 Part 2.
+To add the functionality for elevator capacity, we introduce an AtomicInteger to keep track of the number of Riders in
+the elevator at any given time. When Rider attempts to enter the elevator, we check to see if this value is less than
+the max capacity for the elevator. If it is not, we increment the integer and proceed as before, and return true. If we
+have reached the max capacity, then we return false. If a Rider sees Enter() return false, they simply request another
+elevator.
 
 /************************
  * Feedback on the lab
@@ -101,7 +106,7 @@ http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html
 http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/atomic/AtomicInteger.html
 Lab 3 FAQ
 Recitation Slides (posted on Piazza)
-
+Consulted with another group (loc2) on the proper behavior of ClosedDoors()
 /*
  * List of collaborators involved including any online references/citations.
  * */
