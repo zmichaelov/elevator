@@ -10,9 +10,9 @@
 	NetId1: ghr4
 	Time spent: 10 hours
 
-	Name2: Full Name 	// Edit this accordingly
-	NetId2: fn	 	// Edit
-	Time spent: 10 hours 	// Edit 
+	Name2: Zach Michaelov// Edit this accordingly
+	NetId2: zgm3 // Edit
+	Time spent: 14 hours 	// Edit
 
 	Name3: Full Name 	// Edit this accordingly
 	NetId3: fn	 	// Edit
@@ -70,12 +70,24 @@ Finally, to test this system, decorators were used to wrap the EventBarrier
 and implement Runnable with functions needed so the thread acted as a Controller 
 or a "Minstrel". This allowed for easy testing of the EventBarrier.
 
-=== 2. Elevator === 
+=== 2. Elevator ===
+Part 1.
+The Elevator was implemented using the EventBarrier implementation from the previous part of the lab.
+Each floor in the building is represented by an EventBarrier. When a rider requests a floor, they
+call arrive() on the EventBarrier for the floor requested. When the elevator visits a floor, the current floor
+variable is updated and the doors are opened (OpenDoors()). OpenDoors() calls raise() on the EventBarrier for that floor.
+This allows waiting riders to Enter() and Exit() the elevator. on each call to Enter() and Exit() we call complete() on
+the EventBarrier. In this sense, each rider knows whether they are getting off or on, and the EventBarrier is only
+concerned how many people need move before it can close the doors. OpenDoors() will block until the expected number
+of completes are called. We use an integer and 2 lists to keep track of the current floor, the EventBarriers, and
+the requested floors.
+
+Part 2.
 
 /************************
  * Feedback on the lab
  ************************/
-
+Concurrency is hard!
 /*
  * Any comments/questions/suggestions/experiences that you would help us to
  * improve the lab.
@@ -84,6 +96,11 @@ or a "Minstrel". This allowed for easy testing of the EventBarrier.
 /************************
  * References
  ************************/
+JavaDocs
+http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html
+http://docs.oracle.com/javase/6/docs/api/java/util/concurrent/atomic/AtomicInteger.html
+Lab 3 FAQ
+Recitation Slides (posted on Piazza)
 
 /*
  * List of collaborators involved including any online references/citations.
